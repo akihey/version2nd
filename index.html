@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BINGO VERSION by STORES</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(to right, #FFDDC1, #FFC0CB, #FFB6C1);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-top: 100px;
+        }
+        .title {
+            font-size: 5rem;
+            font-weight: bold;
+            background: white;
+            color: black;
+            padding: 15px;
+            width: 100%;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            top: 10px;
+            left: 0;
+            text-align: center;
+        }
+        .subtitle {
+            font-size: 1.8rem;
+            font-weight: normal;
+            display: block;
+            margin-top: 5px;
+        }
+        .main-container {
+            margin-top: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(15, 1fr);
+            gap: 10px;
+            background: white;
+            color: black;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 1000px;
+            width: 100%;
+        }
+        .grid-item {
+            font-size: 3rem;
+            font-weight: bold;
+            background: yellow;
+            color: black;
+            width: 100%;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .drawn {
+            background: red !important;
+            color: white !important;
+            transform: scale(1.3);
+            transition: transform 0.5s ease;
+        }
+        .number-display {
+            font-size: 15rem;
+            font-weight: bold;
+            background: black;
+            color: white;
+            padding: 80px;
+            border-radius: 30px;
+            transition: transform 0.5s ease;
+        }
+        .rolling {
+            background: #E0E0E0 !important;
+            color: #444 !important;
+        }
+        .pop-out {
+            transform: scale(1.5);
+        }
+        .button {
+            font-size: 1.8rem;
+            padding: 15px 30px;
+            background: #FF6F61;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .button:hover {
+            background: #D84315;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">
+        BINGO <br><span class="subtitle">VERSION by STORES</span>
+    </div>
+
+    <div class="main-container">
+        <div class="number-display" id="currentNumber">?</div>
+        <button class="button" onclick="drawNumber()">抽選する！</button>
+        <div class="grid-container" id="numberGrid"></div>
+    </div>
+
+    <script>
+        let numbers = Array.from({ length: 75 }, (_, i) => i + 1);
+        let drawnNumbers = [];
+        let isRolling = false;
+
+        function createNumberGrid() {
+            let grid = document.getElementById("numberGrid");
+            numbers.forEach(num => {
+                let div = document.createElement("div");
+                div.classList.add("grid-item");
+                div.textContent = num;
+                div.id = `num-${num}`;
+                grid.appendChild(div);
+            });
+        }
+
+        function drawNumber() {
+            if (numbers.length === 0 || isRolling) return;
+            isRolling = true;
+            let numberDisplay = document.getElementById("currentNumber");
+            numberDisplay.classList.add("rolling");
+
+            let rollCount = 0;
+            let interval = setInterval(() => {
+                let randomIndex = Math.floor(Math.random() * numbers.length);
+                numberDisplay.textContent = numbers[randomIndex];
+                rollCount++;
+                if (rollCount >= 15) {
+                    clearInterval(interval);
+                    let randomIndexFinal = Math.floor(Math.random() * numbers.length);
+                    let newNumber = numbers[randomIndexFinal];
+                    drawnNumbers.push(newNumber);
+                    numbers.splice(randomIndexFinal, 1);
+                    numberDisplay.textContent = newNumber;
+                    numberDisplay.classList.remove("rolling");
+                    numberDisplay.classList.add("pop-out");
+                    setTimeout(() => numberDisplay.classList.remove("pop-out"), 500);
+                    document.getElementById(`num-${newNumber}`).classList.add("drawn");
+                    isRolling = false;
+                }
+            }, 200);
+        }
+
+        createNumberGrid();
+    </script>
+</body>
+</html>
