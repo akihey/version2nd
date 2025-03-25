@@ -42,6 +42,8 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
+            position: relative;
+            z-index: 1100; /* 抽選番号を前面に出す */
         }
         .grid-wrapper {
             background: white;
@@ -87,6 +89,8 @@
             border-radius: 30px;
             transition: transform 0.5s ease;
             margin-top: 40px;
+            z-index: 1100;
+            position: relative;
         }
         .rolling {
             background: #E0E0E0 !important;
@@ -163,7 +167,7 @@
                     document.getElementById(`num-${newNumber}`).classList.add("drawn");
                     isRolling = false;
                 }
-            }, 100); // ← ここを 200 から 100 に変更して高速化
+            }, 100);
         }
 
         createNumberGrid();
